@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import serveur.Objet;
@@ -30,7 +31,7 @@ public class VueClient extends JFrame implements ActionListener{
 	
 	private JLabel lblPrixObjet = new JLabel();
 	private JLabel lblNomObjet = new JLabel();
-	private JLabel lblDescriptionObjet = new JLabel();
+	private JTextArea lblDescriptionObjet = new JTextArea();
 	private JLabel lblPseudo = new JLabel();
 	private JLabel lblEncherir = new JLabel();
 	private JLabel lblChrono = new JLabel("chrono");
@@ -55,11 +56,13 @@ public class VueClient extends JFrame implements ActionListener{
 
 	public VueClient() throws Exception {
 		super();
-
+		
 		//Definition de la fenetre
 		this.setSize(800,400);
 		this.setTitle("Vente aux encheres");
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		Font fontBtn = new Font("Serif", Font.PLAIN, 10);
+		Font fontBig = new Font("Serif", Font.PLAIN, 16);
 
 		// PANEL INSCRIPTION
 		inscriptionPanel.setLayout(new GridBagLayout());
@@ -83,7 +86,10 @@ public class VueClient extends JFrame implements ActionListener{
 		// PANEL VENTE
 		mainPanel.setLayout(new GridBagLayout());
 		mainPanel.setPreferredSize(new Dimension(800,400));
-		lblDescriptionObjet.setPreferredSize(new Dimension(500,300));
+		lblNomObjet.setFont(fontBig);
+		lblDescriptionObjet.setEditable(false);
+		lblDescriptionObjet.setLineWrap(true);
+		lblDescriptionObjet.setPreferredSize(new Dimension(700,250));
 		txtEncherir.setPreferredSize(new Dimension(300,40));
 		btnEncherir.setPreferredSize(new Dimension(100,40));
 		btnEncherir.setFont(fontBtn);
