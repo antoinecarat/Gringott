@@ -2,17 +2,23 @@ package client;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,12 +28,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
-import javax.swing.text.JTextComponent;
-import javax.swing.text.Style;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
 import java.awt.Color;
-import java.awt.Component;
 
 import serveur.Objet;
 
@@ -46,7 +47,7 @@ public class VueClient extends JFrame implements ActionListener{
 	private JPanel submissionPanel = new JPanel();
 	private JPanel inscriptionPanel = new JPanel();
 	
-	private JLabel lblItemPrice = new JLabel();			//
+	private JLabel lblItemPrice = new JLabel();			
 	private JTextPane lblItemName = new JTextPane();
 	private JTextArea lblItemDescription = new JTextArea();
 	private JLabel lblPseudo = new JLabel();
@@ -56,15 +57,16 @@ public class VueClient extends JFrame implements ActionListener{
 	private JButton btnEncherir = new JButton("Encherir");
 	private JButton btnPseudo = new JButton("Inscription");
 	private JButton btnSoumettre = new JButton("Soumettre une enchere");
-	private JButton btnSoumettreObjet = new JButton("Soumettre");
+	private JButton btnItemSubmission = new JButton("Soumettre");
 	private JButton btnStop = new JButton("Passer");
+	private JButton btnPhoto = new JButton("Importer");
 	
 	private JTextField txtEncherir = new JTextField();
 	private JTextField txtPseudo = new JTextField();
-	private JTextField txtSoumettreNomObjet = new JTextField();
-	private JTextField txtSoumettreDescriptionObjet = new JTextField();
-	private JTextField txtSoumettrePrixObjet = new JTextField();
-	private JTextField txtSoumettreTemps = new JTextField();
+	private JTextField txtItemName = new JTextField();
+	private JTextField txtItemDescription = new JTextField();
+	private JTextField txtItemPrice = new JTextField();
+	private JFormattedTextField txtItemTime = new JFormattedTextField(DateFormat.getTimeInstance());;
 	
 	private JFrame frmSoumettre = new JFrame("Soumettre une enchere");
 
@@ -76,7 +78,7 @@ public class VueClient extends JFrame implements ActionListener{
 		super();
 		
 		//Definition de la fenetre
-		this.setSize(1000,500);
+		this.setSize(800,600);
 		this.setTitle("Vente aux encheres");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -107,12 +109,10 @@ public class VueClient extends JFrame implements ActionListener{
 	    gbc.gridheight = 1;
 	    gbc.gridwidth = 1;
 		inscriptionPanel.add(btnPseudo, gbc);
-//------------------------------------------------------------
 		
-			
-		// bitsPanel
-		
-		
+/****************************************************
+ *                   bidsPanel                      *
+*****************************************************/
 		//bidsPanel.setLayout(new GridBagLayout());
 		bidsPanel.setPreferredSize(new Dimension(1000,500));
 		lblItemName.setFont(fontBig);
@@ -169,131 +169,104 @@ public class VueClient extends JFrame implements ActionListener{
 		gbc.gridwidth=1;
 		bidsPanel.add(btnSoumettre, gbc);
 
-//----------------------------------------------------
+/****************************************************
+ *                   submissionPanel                *
+*****************************************************/
 		submissionPanel.setLayout(new GridBagLayout());
-				
-		JLabel photoLabel = new JLabel("photo");
-		photoLabel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
-		photoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		photoLabel.setPreferredSize(new Dimension(75, 100));
-		
+			
+		ImageIcon image = new ImageIcon("src/pouet.jpg");
+	
+		JLabel labelPicture = new JLabel(image);
 		JLabel labelName = new JLabel("Nom : ");
 		JLabel labelDescription = new JLabel("Description : ");
 		JLabel labelPrice = new JLabel ("Prix de base : ");
 		JLabel labelTime = new JLabel ("Date de fin : ");
+
+		labelPicture.setPreferredSize(new Dimension(300, 350));
+		labelName.setPreferredSize(new Dimension(100,40));
+		txtItemName.setPreferredSize(new Dimension(300,40));
+		labelDescription.setPreferredSize(new Dimension(100,150));
+		txtItemDescription.setPreferredSize(new Dimension(300, 150));
+		labelPrice.setPreferredSize(new Dimension(100,40));
+		txtItemPrice.setPreferredSize(new Dimension(300, 40));
+		labelTime.setPreferredSize(new Dimension(100,40));
+		txtItemTime.setPreferredSize(new Dimension(300, 40));
 		
-		JSeparator separator = new JSeparator();
-		GridBagConstraints gbTabSubmission = new GridBagConstraints();
+		//sJSeparator separator = new JSeparator();
+		GridBagConstraints gbSubmission = new GridBagConstraints();
 
-		 /* a- ajout du label contenant le matricule. */
-        gbTabSubmission.gridx = gbTabSubmission.gridy = 0;
-        gbTabSubmission.gridwidth = GridBagConstraints.REMAINDER; // gbc.gridheight = 1;
-        gbTabSubmission.insets = new Insets(10, 5, 0, 0);
-        /* Le point d'ancrage ici n'a pas une grande importance. Nous allons quand même essayer d'aligner tout les
-         * composants qui le peuvent sur leur ligne de base. */
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_LEADING;
-        submissionPanel.add(lblPseudo, gbc);
 		
+		//Picture
+		gbSubmission.gridx = 0;
+        gbSubmission.gridy = 0;
+        gbSubmission.gridwidth = 1;
+        gbSubmission.gridheight = 4;
+        gbSubmission.insets = new Insets(5, 5, 5, 50);
+        submissionPanel.add(labelPicture, gbSubmission);
+        gbSubmission.insets = new Insets(0, 0, 0, 0);
+
+        
+        // Name 
+        gbSubmission.gridx = 1;
+        gbSubmission.gridheight = 1;
+        submissionPanel.add(labelName, gbSubmission);
+        
+        gbSubmission.gridx = 2;
+        submissionPanel.add(txtItemName, gbSubmission);
+        
+        //Description
+        gbSubmission.gridx = 1;
+        	gbSubmission.gridy = 2;
+        	gbSubmission.gridwidth = 1;
+        	gbSubmission.gridheight = 1;
+        submissionPanel.add(labelDescription, gbSubmission);
+        
+        gbSubmission.gridx = 2;
+        submissionPanel.add(txtItemDescription, gbSubmission);
+        
+        // Price
+        gbSubmission.gridx = 1;
+        	gbSubmission.gridy = 3;        
+        submissionPanel.add(labelPrice, gbSubmission);
+        
+        gbSubmission.gridx = 2;
+        	gbSubmission.gridy = 3;
+        submissionPanel.add(txtItemPrice, gbSubmission);
+        
+        // Time
+        gbSubmission.gridx = 1;
+        gbSubmission.gridy = 4;
+        submissionPanel.add(labelTime, gbSubmission);
+        
+        gbSubmission.gridx = 2;
+        	gbSubmission.gridy = 4;
+		submissionPanel.add(txtItemTime , gbSubmission);
 		
-		/* b- ajout de la zone pour la photo. nous avons utilisé une étiquette pour cela. */
-		gbTabSubmission.gridy = 1;
-        gbTabSubmission.gridwidth = 1;
-        gbTabSubmission.gridheight = 4;
-        /* Ici, nous ne voulons surement pas que le composant s'aligne sur la ligne de base. Il n'est pas censé
-        * représenté un élémént de texte mais bien une image. Nous allons donc utiliser la constance LINE_START. */
-        gbTabSubmission.anchor = GridBagConstraints.LINE_START;
-        gbTabSubmission.insets = new Insets(5, 5, 0, 0);
-        submissionPanel.add(photoLabel, gbTabSubmission);
-	
-        /* c- étiquette contenant le nom. */
-        gbTabSubmission.gridx = gbTabSubmission.gridy = gbTabSubmission.gridwidth = gbTabSubmission.gridheight = 1;
-        /* L'étiquette avec le nom sera alignée sur la ligne de base avec le champ de saisie pour le nom. */
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbTabSubmission.insets = new Insets(0, 5, 0, 0);
-        submissionPanel.add(labelName, gbTabSubmission);
-        
-        /* d- le champs de saisie pour le nom. */
-        gbTabSubmission.gridx = 2;
-        gbTabSubmission.gridy = 1;
-        gbTabSubmission.gridwidth = GridBagConstraints.REMAINDER; // dernier composant de la ligne.
-        gbTabSubmission.fill = GridBagConstraints.HORIZONTAL; // étalons le sur l'espace disponible.
-        gbTabSubmission.insets = new Insets(3, 5, 0, 5); // laissons tout de même une marge à droite.
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE; // alignons le sur la même ligne de base que son étiquette.
-        submissionPanel.add(txtSoumettreNomObjet, gbTabSubmission);
-        
-        /* e- l'étiquette pour la description. */
-        gbTabSubmission.gridx = gbTabSubmission.gridwidth = gbTabSubmission.gridheight = 1;
-        gbTabSubmission.gridy = 2;
-        gbTabSubmission.fill = GridBagConstraints.NONE;
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbTabSubmission.insets = new Insets(0, 5, 0, 0);
-        submissionPanel.add(labelDescription, gbTabSubmission);
-        
-        /* f- le champ de saisie pour la description*/
-        gbTabSubmission.gridx = gbTabSubmission.gridy = 2;
-        gbTabSubmission.gridwidth = GridBagConstraints.REMAINDER;
-        gbTabSubmission.fill = GridBagConstraints.HORIZONTAL;
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbTabSubmission.insets = new Insets(3, 5, 0, 5);
-        submissionPanel.add(txtSoumettreDescriptionObjet, gbTabSubmission);
-        
-        /* g- l'étiquette pour le prix. */
-        gbTabSubmission.gridx = gbTabSubmission.gridwidth = gbTabSubmission.gridheight = 1;
-        gbTabSubmission.gridy = 3;
-        gbTabSubmission.fill = GridBagConstraints.NONE;
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbTabSubmission.insets = new Insets(0, 5, 0, 0);
-        submissionPanel.add(labelPrice, gbTabSubmission);
-        
-        /* h- le champ de saisie pour le prix*/
-        gbTabSubmission.gridx = gbTabSubmission.gridy = 2;
-        gbTabSubmission.gridwidth = GridBagConstraints.REMAINDER;
-        gbTabSubmission.fill = GridBagConstraints.HORIZONTAL;
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbTabSubmission.insets = new Insets(3, 5, 0, 5);
-        submissionPanel.add(txtSoumettrePrixObjet, gbTabSubmission);
+		gbSubmission.gridx = 0;
+        gbSubmission.gridy = 4;
+        gbSubmission.insets = new Insets(5, 5, 5, 50);
+        submissionPanel.add(btnPhoto, gbSubmission);
+        gbSubmission.insets = new Insets(0, 0, 0, 0);
 
-        /* i- l'étiquette pour le temps. */
-        gbTabSubmission.gridx = gbTabSubmission.gridwidth = gbTabSubmission.gridheight = 1;
-        gbTabSubmission.gridy = 4;
-        gbTabSubmission.fill = GridBagConstraints.NONE;
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbTabSubmission.insets = new Insets(0, 5, 0, 0);
-        submissionPanel.add(labelTime, gbTabSubmission);
+		// Separator
+        /*mgbSubmission.gridx = 1;
+		gbSubmission.gridy = 5;
+        gbSubmission.gridwidth = 2;
+        submissionPanel.add(separator, gbSubmission);*/
         
-        /* j- le champ de saisie pour le temps*/
-        gbTabSubmission.gridx = gbTabSubmission.gridy = 2;
-        gbTabSubmission.gridwidth = GridBagConstraints.REMAINDER;
-        gbTabSubmission.fill = GridBagConstraints.HORIZONTAL;
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_LEADING;
-        gbTabSubmission.insets = new Insets(3, 5, 0, 5);
-		submissionPanel.add(txtSoumettreTemps , gbTabSubmission);
-
-
-        /* M- Un séparateur. */
-		gbTabSubmission.gridy = 5;
-        gbTabSubmission.gridx = 0;
-        gbTabSubmission.anchor = GridBagConstraints.CENTER;
-        gbTabSubmission.fill = GridBagConstraints.HORIZONTAL;
-        gbTabSubmission.insets = new Insets(3, 5, 0, 5);
-        submissionPanel.add(separator, gbTabSubmission);
-        
-        /* N- Le bouton permettant d'imprimer. */
-        gbTabSubmission.gridy = 6;
-        gbTabSubmission.gridheight = GridBagConstraints.REMAINDER; /* dernier composant de la colonne */
-        gbTabSubmission.weighty = 1.;
-        gbTabSubmission.fill = GridBagConstraints.NONE;
-        gbTabSubmission.anchor = GridBagConstraints.BASELINE_TRAILING;
-        gbTabSubmission.insets = new Insets(3, 0, 5, 5);
-        submissionPanel.add(btnSoumettreObjet, gbTabSubmission);
+        // Button for submission
+        gbSubmission.gridx = 2;
+        gbSubmission.gridy = 6;
+        submissionPanel.add(btnItemSubmission, gbSubmission);
 		
 		
 		// Ajout des liaison avec les boutons
 		btnEncherir.addActionListener(this);
 		btnPseudo.addActionListener(this);
 		btnSoumettre.addActionListener(this);
-		btnSoumettreObjet.addActionListener(this);
+		btnItemSubmission.addActionListener(this);
 		btnStop.addActionListener(this);
+		btnItemSubmission.addActionListener(this);
 		
 		this.setContentPane(inscriptionPanel);
 		this.setVisible(true);
@@ -362,13 +335,9 @@ public class VueClient extends JFrame implements ActionListener{
 			}
 		}
 		
-		/*else if(arg0.getSource().equals(btnSoumettre)) {
-			soumettre();
-		}*/
-		
-		else if(arg0.getSource().equals(btnSoumettreObjet)) {
+		else if(arg0.getSource().equals(btnItemSubmission)) {
 			try {
-				currentClient.nouvelleSoumission(txtSoumettreNomObjet.getText(), txtSoumettreDescriptionObjet.getText(), Integer.parseInt(txtSoumettrePrixObjet.getText()));
+				currentClient.nouvelleSoumission(txtItemName.getText(), txtItemDescription.getText(), Integer.parseInt(txtItemPrice.getText()));
 			} catch (NumberFormatException e) {
 				System.out.println("Impossible de soumettre cet objet.");
 			}
