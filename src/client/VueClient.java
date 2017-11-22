@@ -28,6 +28,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+
+import client.vue.bidsPanel;
+
 import java.awt.Color;
 
 import serveur.Objet;
@@ -114,7 +117,8 @@ public class VueClient extends JFrame implements ActionListener{
  *                   bidsPanel                      *
 *****************************************************/
 		//bidsPanel.setLayout(new GridBagLayout());
-		bidsPanel.setPreferredSize(new Dimension(1000,500));
+			
+		/*bidsPanel.setPreferredSize(new Dimension(800,600));
 		lblItemName.setFont(fontBig);
 		lblItemDescription.setEditable(false);
 		lblItemDescription.setLineWrap(true);
@@ -167,7 +171,7 @@ public class VueClient extends JFrame implements ActionListener{
 		
 		gbc.gridx=6;
 		gbc.gridwidth=1;
-		bidsPanel.add(btnSoumettre, gbc);
+		bidsPanel.add(btnSoumettre, gbc);*/
 
 /****************************************************
  *                   submissionPanel                *
@@ -328,7 +332,8 @@ public class VueClient extends JFrame implements ActionListener{
 			try {
 				setClient(new Client(txtPseudo.getText()));
 				currentClient.inscription();
-				changerGUI(this.mainPanel);
+				bidsPanel = new bidsPanel(currentClient);
+				changerGUI(this.bidsPanel);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Inscription impossible");

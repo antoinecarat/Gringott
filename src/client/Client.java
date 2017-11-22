@@ -3,6 +3,8 @@ package client;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import serveur.Objet;
 import serveur.Vente;
@@ -16,6 +18,7 @@ public class Client extends UnicastRemoteObject implements Acheteur {
 	private VueClient vue;
 	private Vente serveur;
 	private Objet currentObjet;
+	private List<Objet> items;
 	private EtatClient etat = EtatClient.ATTENTE;
 	private Chrono chrono = new Chrono(30000, this); // Chrono de 30sc
 
@@ -25,6 +28,11 @@ public class Client extends UnicastRemoteObject implements Acheteur {
 		this.pseudo = pseudo;
 		this.serveur = connexionServeur();
 		this.currentObjet = serveur.getObjet();
+		this.items = new ArrayList<Objet>();
+		while(this.currentObjet != null) {
+			this.items.add(currentObjet);
+			this.currentObjet = serveur.getObjet();
+		}
 	}
 
 	public static Vente connexionServeur() {
@@ -142,6 +150,10 @@ public class Client extends UnicastRemoteObject implements Acheteur {
 
 	public void updateChrono(){
 		this.vue.updateChrono(this.chrono.getTemps(), this.chrono.getTempsFin());
+	}
+
+	public List<Objet> getItems() {
+		return items;
 	}
 
 }
