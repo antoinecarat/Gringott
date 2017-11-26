@@ -29,7 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 
-import client.vue.bidsPanel;
+import client.vue.BidsPanel;
 
 import java.awt.Color;
 
@@ -332,8 +332,8 @@ public class VueClient extends JFrame implements ActionListener{
 			try {
 				setClient(new Client(txtPseudo.getText()));
 				currentClient.inscription();
-				bidsPanel = new bidsPanel(currentClient);
-				changerGUI(this.bidsPanel);
+				//bidsPanel = new BidsPanel(currentClient);
+				//changerGUI(this.bidsPanel);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.out.println("Inscription impossible");
