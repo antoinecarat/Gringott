@@ -5,10 +5,17 @@ public class SellableItem implements Item {
 	private static final long serialVersionUID = -4517882019233732317L;
 	private String name;
 	private String description;
-	private String leader;
+	private IClient leader;
 	private double price;
 	private boolean sold;
 	
+	public SellableItem(String name, String description, double price, IClient leader) {
+		this.name = name;
+		this.description = description;
+		this.price = price;
+		this.leader = leader;
+		this.sold = false;
+	}
 	
 	@Override
 	public String getName() {
@@ -21,7 +28,7 @@ public class SellableItem implements Item {
 	}
 
 	@Override
-	public String getLeader() {
+	public IClient getLeader() {
 		return this.leader;
 	}
 
@@ -36,7 +43,7 @@ public class SellableItem implements Item {
 	}
 
 	@Override
-	public void setLeader(String leader) {
+	public void setLeader(IClient leader) {
 		this.leader = leader;
 	}
 

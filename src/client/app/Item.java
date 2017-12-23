@@ -20,7 +20,7 @@ public interface Item extends Serializable {
 	 * Get the leader of the bid for the Item.
 	 * @return the leader
 	 */
-	String getLeader();
+	IClient getLeader();
 	
 	/**
 	 * Get the current price of the Item.
@@ -38,7 +38,7 @@ public interface Item extends Serializable {
 	 * Set the leader of the bid for the Item.
 	 * @params leader the leader
 	 */
-	void setLeader(String leader);
+	void setLeader(IClient leader);
 	
 	/**
 	 * Set the new price of the Item.

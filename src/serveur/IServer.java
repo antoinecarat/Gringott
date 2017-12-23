@@ -1,18 +1,21 @@
 package serveur;
 
+import java.io.Serializable;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.List;
 
+import client.app.IClient;
 import client.app.Item;
 
-public interface IServer extends Remote {
+public interface IServer extends Remote, Serializable {
 
-	void registerClient(String pseudo);
+	void registerClient(IClient client) throws RemoteException;
 	
-	void bid(Item item, double newPrice, String buyer);
+	void bid(Item item, double newPrice, IClient buyer)  throws RemoteException;
 	
-	List<Item> getItems();
+	List<Item> getItems()  throws RemoteException;
 	
-	void submit(Item item);
+	void submit(Item item)  throws RemoteException;
 	
 }
