@@ -1,4 +1,4 @@
-package client.vue;
+package client.view;
 
 import java.awt.event.ActionListener;
 
@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 
 public class RegisterPanel extends JPanel {
 	
+	private static final long serialVersionUID = -4854758538004111313L;
 	private ActionListener controller;
 	private JTextField registerField;
 	private JButton registerButton;

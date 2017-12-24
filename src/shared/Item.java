@@ -1,4 +1,4 @@
-package client.app;
+package shared;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -53,8 +53,16 @@ public interface Item extends Serializable {
 	 */
 	void setSold(boolean status);
 
+	/**
+	 * Set the end  date of the Item.
+	 * @return the date
+	 */
 	Date getTime();
 
+	/**
+	 * Set the seller of the Item.
+	 * @return the seller's pseudo
+	 */
 	Object getSeller();
 		
 }

@@ -1,4 +1,4 @@
-package client.vue;
+package client.view;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -16,9 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import client.app.IClient;
-import client.app.Item;
-import client.app.SellableItem;
+import shared.IClient;
+import shared.Item;
+import shared.SellableItem;
 
 public class BidsPanel extends JPanel {
 
@@ -32,8 +32,6 @@ public class BidsPanel extends JPanel {
 		super();
 		this.client = client;
 		this.controller = controller;
-
-		
 
 		items = client.getItems();
 

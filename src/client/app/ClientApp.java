@@ -10,16 +10,17 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import client.vue.BidButton;
-import client.vue.ClientFrame;
-import serveur.IServer;
+import client.view.BidButton;
+import client.view.ClientFrame;
+import shared.IClient;
+import shared.IServer;
+import shared.Item;
 
 public class ClientApp extends UnicastRemoteObject implements IClient, ActionListener {
 
 	private static final long serialVersionUID = 1373624286313090112L;
 	private ClientFrame view;
 	private String pseudo;
-	// OrderedSet ? Map ?
 	private List<Item> items;
 	private IServer server;
 
@@ -28,6 +29,12 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		this.view = new ClientFrame(this, this);
 		this.view.setVisible(true);
 		this.server = (IServer) Naming.lookup("//" + url);
+	}
+	
+	public void updateView() throws RemoteException {
+		this.view.rebuild();
+		this.view.repaint();
+		this.view.revalidate();
 	}
 
 	@Override
@@ -68,29 +75,6 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		}
 	}
 
-	public void updateView() throws RemoteException {
-		this.view.rebuild();
-		this.view.repaint();
-		this.view.revalidate();
-	}
-
-	public static void main(String[] args) {
-		try {
-			String serverURL = "localhost:8090/enchere";
-			ClientApp c = new ClientApp(serverURL);
-			System.out.println("Connexion au serveur " + serverURL + " reussi.");
-		} catch (RemoteException e) {
-			System.out.println("Connexion au serveur impossible.");
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			System.out.println("Erreur dans l'adresse du serveur.");
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			System.out.println("Serveur inconnu.");
-			e.printStackTrace();
-		}
-	}
-
 	@Override
 	public String getPseudo() throws RemoteException {
 		return this.pseudo;
@@ -123,7 +107,11 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		case "Enchérir":
 			try {
 				BidButton source = (BidButton) e.getSource();
-				this.server.bid(source.getItem(), Double.parseDouble(source.getContent()), this.getPseudo());
+				if (Double.parseDouble(source.getContent()) >= source.getItem().getPrice()*0.2) {
+					this.server.bid(source.getItem(), Double.parseDouble(source.getContent()), this.getPseudo());
+				} else {
+					System.out.println("Vous devez enchérir d'au moins 20% du prix courant.");
+				}
 			} catch (NumberFormatException e1) {
 				System.out.println("Merci de mettre un nombre.");
 			} catch (RemoteException e1) {
@@ -160,4 +148,21 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		this.pseudo = pseudo;
 	}
 
+	public static void main(String[] args) {
+		try {
+			String serverURL = "localhost:8090/enchere";
+			ClientApp c = new ClientApp(serverURL);
+			System.out.println("Connexion au serveur " + serverURL + " reussi.");
+		} catch (RemoteException e) {
+			System.out.println("Connexion au serveur impossible.");
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			System.out.println("Erreur dans l'adresse du serveur.");
+			e.printStackTrace();
+		} catch (NotBoundException e) {
+			System.out.println("Serveur inconnu.");
+			e.printStackTrace();
+		}
+	}
+	
 }

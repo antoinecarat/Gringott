@@ -1,18 +1,14 @@
-package client.vue;
+package client.view;
 
 import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 
-import client.app.IClient;
+import shared.IClient;
 
 public class ClientFrame extends JFrame {
 

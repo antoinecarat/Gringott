@@ -1,4 +1,4 @@
-package client.vue;
+package client.view;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -12,8 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import client.app.IClient;
-import client.app.Item;
+import shared.IClient;
+import shared.Item;
 
 public class OwnedPanel extends JPanel {
 
@@ -27,7 +27,6 @@ public class OwnedPanel extends JPanel {
 		this.controller = controller;
 		
 		items = client.getItems();
-		//this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(800,600));
 
 
@@ -47,7 +46,7 @@ public class OwnedPanel extends JPanel {
 
 			GridBagConstraints gbc = new GridBagConstraints();
 
-			if (i.isSold() && client.getPseudo().equals(i.getLeader())) {
+			if (i.isSold() && client.getPseudo() !=null && client.getPseudo().equals(i.getLeader())) {
 				
 				gbc.gridx = 0;
 				gbc.gridy = 0;

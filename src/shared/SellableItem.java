@@ -1,4 +1,4 @@
-package client.app;
+package shared;
 
 import java.util.Date;
 

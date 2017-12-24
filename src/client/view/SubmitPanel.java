@@ -1,4 +1,4 @@
-package client.vue;
+package client.view;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -12,9 +12,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import client.app.IClient;
-import client.app.Item;
-import client.app.SellableItem;
+import shared.IClient;
+import shared.Item;
+import shared.SellableItem;
 
 public class SubmitPanel extends JPanel {
 

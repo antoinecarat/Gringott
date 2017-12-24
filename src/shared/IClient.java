@@ -1,10 +1,8 @@
-package client.app;
+package shared;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
-
-import serveur.IServer;
 
 public interface IClient extends Remote {
 
@@ -28,12 +26,25 @@ public interface IClient extends Remote {
 	 */
 	void endSelling(Item item)  throws RemoteException;
 
+	/**
+	 * Get client's pseudo.
+	 */
 	String getPseudo() throws RemoteException;
 
+	/**
+	 * Get client's items.
+	 */
 	List<Item> getItems() throws RemoteException;
 
+	/**
+	 * Get client's server.
+	 */
 	IServer getServer() throws RemoteException;
 
+	/**
+	 * Set client's pseudo.
+	 * @param pseudo the new pseudo
+	 */
 	void setPseudo(String pseudo) throws RemoteException;
 	
 }

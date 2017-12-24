@@ -1,12 +1,13 @@
-package client.vue;
+package client.view;
 
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 
-import client.app.Item;
+import shared.Item;
 
 public class BidButton extends JButton {
 
+	private static final long serialVersionUID = 5268533470010984872L;
 	private Item related;
 	private JTextArea source;
 	

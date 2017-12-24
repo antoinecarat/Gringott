@@ -1,4 +1,4 @@
-package serveur;
+package server;
 
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import client.app.IClient;
-import client.app.Item;
-import client.app.SellableItem;
+import shared.IClient;
+import shared.IServer;
+import shared.Item;
 
 public class ServerApp extends UnicastRemoteObject implements IServer {
 
@@ -37,6 +37,18 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 			client.addNewItem(i);
 		}
 	}
+	
+	@Override
+	public void logout(IClient client) throws RemoteException {
+		System.out.println(client.getPseudo() + " logged out.");
+		for (IClient c : clients) {
+			if (c.getPseudo().equals(client.getPseudo())) {
+				this.clients.remove(client);
+			}
+			break;
+		}
+		System.out.println(clients.size() > 0 ? "Still connected : " + clients : "No clients connected now.");
+	}
 
 	@Override
 	public void bid(Item item, double newPrice, String buyer) throws RemoteException {
@@ -57,11 +69,6 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	}
 
 	@Override
-	public List<Item> getItems() {
-		return this.items;
-	}
-
-	@Override
 	public void submit(Item item) throws RemoteException {
 		System.out.println("New item registered : " + item);
 		this.items.add(item);
@@ -70,7 +77,22 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 			c.addNewItem(item);
 		}
 	}
-
+	
+	@Override
+	public List<Item> getItems() {
+		return this.items;
+	}
+	
+	@Override
+	public List<IClient> getClients() throws RemoteException {
+		return this.clients;
+	}
+	
+	@Override
+	public DBManager getDB() {
+		return this.dbManager;
+	}
+	
 	public static void main(String[] args) {
 		try {
 			int port = 8090;
@@ -102,28 +124,6 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public List<IClient> getClients() throws RemoteException {
-		return this.clients;
-	}
-
-	@Override
-	public void logout(IClient client) throws RemoteException {
-		System.out.println(client.getPseudo() + " logged out.");
-		for (IClient c : clients) {
-			if (c.getPseudo().equals(client.getPseudo())) {
-				this.clients.remove(client);
-			}
-			break;
-		}
-		System.out.println(clients.size() > 0 ? "Still connected : " + clients : "No clients connected now.");
-	}
-
-	@Override
-	public DBManager getDB() {
-		return this.dbManager;
 	}
 
 }
