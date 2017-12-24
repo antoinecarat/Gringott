@@ -33,7 +33,9 @@ public class DBManager {
 		if (recreate) {
 			Path file = Paths.get(dbPath);
 			try {
-				Files.delete(file);
+				if (Files.exists(file)){
+					Files.delete(file);
+				}
 				this.jsonWritter = Files.newBufferedWriter(file, StandardOpenOption.CREATE);
 				jsonWritter.write("{\n\"items\": []\n}");
 				jsonWritter.flush();
