@@ -44,13 +44,13 @@ public class SubmitPanel extends JPanel {
 		JLabel labelPrice = new JLabel("Prix de base : ");
 		JLabel labelTime = new JLabel("Durée de la vente (minutes) : ");
 
-		labelName.setPreferredSize(new Dimension(100, 40));
+		labelName.setPreferredSize(new Dimension(250, 40));
 		txtItemName.setPreferredSize(new Dimension(300, 40));
-		labelDescription.setPreferredSize(new Dimension(100, 150));
+		labelDescription.setPreferredSize(new Dimension(250, 150));
 		txtItemDescription.setPreferredSize(new Dimension(300, 150));
-		labelPrice.setPreferredSize(new Dimension(100, 40));
+		labelPrice.setPreferredSize(new Dimension(250, 40));
 		txtItemPrice.setPreferredSize(new Dimension(300, 40));
-		labelTime.setPreferredSize(new Dimension(100, 40));
+		labelTime.setPreferredSize(new Dimension(250, 40));
 		txtItemTime.setPreferredSize(new Dimension(300, 40));
 
 		GridBagConstraints gbSubmission = new GridBagConstraints();
@@ -98,19 +98,7 @@ public class SubmitPanel extends JPanel {
 		gbSubmission.gridy = 4;
 		this.add(txtItemTime, gbSubmission);
 
-		gbSubmission.gridx = 0;
-		gbSubmission.gridy = 4;
-		gbSubmission.insets = new Insets(5, 5, 5, 50);
-		// this.add(btnPhoto, gbSubmission);
-		gbSubmission.insets = new Insets(0, 0, 0, 0);
-
-		// Separator
-		/*
-		 * mgbSubmission.gridx = 1; gbSubmission.gridy = 5;
-		 * gbSubmission.gridwidth = 2; submissionPanel.add(separator,
-		 * gbSubmission);
-		 */
-
+	
 		// Button for submission
 		gbSubmission.gridx = 2;
 		gbSubmission.gridy = 6;
