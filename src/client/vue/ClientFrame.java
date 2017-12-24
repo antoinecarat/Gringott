@@ -31,12 +31,13 @@ public class ClientFrame extends JFrame {
 		registerPanel = new RegisterPanel(controller);
 		
 		this.bidsPanel = new BidsPanel(client, controller);
+		JScrollPane bidsScroll = new JScrollPane(bidsPanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.ownedPanel = new OwnedPanel(client, controller);
-		JScrollPane scroll = new JScrollPane(bidsPanel);
+		JScrollPane ownedScroll = new JScrollPane(ownedPanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.tabPanel = new JTabbedPane();
 		this.tabPanel.addTab("Soummettre un article", new SubmitPanel(client, controller));
-		this.tabPanel.addTab("Mes achats", ownedPanel);
-		this.tabPanel.addTab("Enchères", scroll);
+		this.tabPanel.addTab("Mes achats", ownedScroll);
+		this.tabPanel.addTab("Enchères", bidsScroll);
 		this.tabPanel.setSelectedIndex(2);
 		
 		
@@ -65,9 +66,11 @@ public class ClientFrame extends JFrame {
 		this.tabPanel.remove(1);
 		this.tabPanel.remove(1);
 		this.bidsPanel = new BidsPanel(this.client, this.controller);
+		JScrollPane bidsScroll = new JScrollPane(bidsPanel,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.ownedPanel = new OwnedPanel(this.client, this.controller);
-		this.tabPanel.add("Mes achats", ownedPanel);
-		this.tabPanel.add("Enchères", bidsPanel);
+		JScrollPane ownedScroll = new JScrollPane(ownedPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		this.tabPanel.add("Mes achats", ownedScroll);
+		this.tabPanel.add("Enchères", bidsScroll);
 		this.tabPanel.setSelectedIndex(2);
 	}
 		

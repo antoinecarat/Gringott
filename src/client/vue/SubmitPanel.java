@@ -44,13 +44,13 @@ public class SubmitPanel extends JPanel {
 		JLabel labelPrice = new JLabel("Prix de base : ");
 		JLabel labelTime = new JLabel("Durée de la vente (minutes) : ");
 
-		labelName.setPreferredSize(new Dimension(100, 40));
+		labelName.setPreferredSize(new Dimension(250, 40));
 		txtItemName.setPreferredSize(new Dimension(300, 40));
-		labelDescription.setPreferredSize(new Dimension(100, 150));
+		labelDescription.setPreferredSize(new Dimension(250, 150));
 		txtItemDescription.setPreferredSize(new Dimension(300, 150));
-		labelPrice.setPreferredSize(new Dimension(100, 40));
+		labelPrice.setPreferredSize(new Dimension(250, 40));
 		txtItemPrice.setPreferredSize(new Dimension(300, 40));
-		labelTime.setPreferredSize(new Dimension(100, 40));
+		labelTime.setPreferredSize(new Dimension(250, 40));
 		txtItemTime.setPreferredSize(new Dimension(300, 40));
 
 		GridBagConstraints gbSubmission = new GridBagConstraints();

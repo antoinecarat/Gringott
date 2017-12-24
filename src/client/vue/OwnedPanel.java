@@ -26,7 +26,9 @@ public class OwnedPanel extends JPanel {
 		this.controller = controller;
 		
 		items = client.getItems();
-		// this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		//this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setPreferredSize(new Dimension(800,600));
+
 
 		for (Item i : items) {
 			JPanel itemPanel = new JPanel();
