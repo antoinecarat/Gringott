@@ -7,16 +7,18 @@ public class SellableItem implements Item {
 	private static final long serialVersionUID = -4517882019233732317L;
 	private String name;
 	private String description;
+	private String seller;
 	private IClient leader;
 	private double price;
 	private Date time;
 	private boolean sold;
 	
-	public SellableItem(String name, String description, double price, IClient leader, long time2leave) {
+	public SellableItem(String name, String description, double price, String seller, long time2leave) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
-		this.leader = leader;
+		this.seller = seller;
+		this.leader = null;
 		this.time = new Date(System.currentTimeMillis() + time2leave*60000);
 		this.sold = false;
 	}
@@ -64,5 +66,10 @@ public class SellableItem implements Item {
 	@Override
 	public Date getTime() {
 		return this.time;
+	}
+
+	@Override
+	public Object getSeller() {
+		return this.seller;
 	}
 }

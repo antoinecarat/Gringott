@@ -19,6 +19,7 @@ public class ClientFrame extends JFrame {
 	private static final long serialVersionUID = 6994145468596380654L;
 	private IClient client;
 	private BidsPanel bidsPanel;
+	private OwnedPanel ownedPanel;
 	private JTabbedPane tabPanel;
 	private RegisterPanel registerPanel;
 	private ActionListener controller;
@@ -30,11 +31,13 @@ public class ClientFrame extends JFrame {
 		registerPanel = new RegisterPanel(controller);
 		
 		this.bidsPanel = new BidsPanel(client, controller);
+		this.ownedPanel = new OwnedPanel(client, controller);
 		JScrollPane scroll = new JScrollPane(bidsPanel);
 		this.tabPanel = new JTabbedPane();
 		this.tabPanel.addTab("Soummettre un article", new SubmitPanel(client, controller));
+		this.tabPanel.addTab("Mes achats", ownedPanel);
 		this.tabPanel.addTab("Enchères", scroll);
-		this.tabPanel.setSelectedIndex(1);
+		this.tabPanel.setSelectedIndex(2);
 		
 		
 		this.setTitle("Gringott - Service d'enchère pour sorciers");
@@ -60,9 +63,12 @@ public class ClientFrame extends JFrame {
 
 	public void rebuild() throws RemoteException {
 		this.tabPanel.remove(1);
+		this.tabPanel.remove(1);
 		this.bidsPanel = new BidsPanel(this.client, this.controller);
+		this.ownedPanel = new OwnedPanel(this.client, this.controller);
+		this.tabPanel.add("Mes achats", ownedPanel);
 		this.tabPanel.add("Enchères", bidsPanel);
-		this.tabPanel.setSelectedIndex(1);
+		this.tabPanel.setSelectedIndex(2);
 	}
 		
 }

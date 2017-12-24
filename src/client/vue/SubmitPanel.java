@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -117,8 +118,8 @@ public class SubmitPanel extends JPanel {
 		this.add(btnItemSubmission, gbSubmission);
 	}
 
-	public Item getFieldsContent(){
-		Item content = new SellableItem(txtItemName.getText(), txtItemDescription.getText(), Double.parseDouble(txtItemPrice.getText()), client, Long.parseLong(txtItemTime.getText()));
+	public Item getFieldsContent() throws NumberFormatException, RemoteException{
+		Item content = new SellableItem(txtItemName.getText(), txtItemDescription.getText(), Double.parseDouble(txtItemPrice.getText()), client.getPseudo(), Long.parseLong(txtItemTime.getText()));
 		return content;
 	}
 

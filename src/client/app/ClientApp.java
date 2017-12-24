@@ -23,7 +23,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 	private List<Item> items;
 	private IServer server;
 
-	ClientApp(String url) throws MalformedURLException, RemoteException, NotBoundException {
+	public ClientApp(String url) throws MalformedURLException, RemoteException, NotBoundException {
 		this.items = new ArrayList<Item>();
 		this.view = new ClientFrame(this, this);
 		this.view.setVisible(true);

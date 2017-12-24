@@ -1,8 +1,23 @@
 package serveur;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import client.app.IClient;
 import client.app.Item;
 import client.app.SellableItem;
 
@@ -10,12 +25,77 @@ public class DBManager {
 
 	private static final String dbPath = "db.json";
 
+	private BufferedReader jsonReader;
+	private BufferedWriter jsonWritter;
+
+	public DBManager() {
+		Path file = Paths.get(dbPath);
+		try {
+			this.jsonWritter = Files.newBufferedWriter(file, StandardOpenOption.CREATE);
+			jsonWritter.write("{\n\"items\": []\n}");
+			jsonWritter.flush();
+			this.jsonReader = new BufferedReader(new FileReader(dbPath));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		printDBFile();
+	}
+
+	private void printDBFile() {
+		System.out.println("DATABASE :");
+		if (jsonReader != null) {
+			String line = null;
+			try {
+				while ((line = jsonReader.readLine()) != null) {
+					System.out.println(line);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Not defined");
+		}
+	}
+
+	public void addItem(Item i){
+		Gson gson = new Gson();
+		JsonParser parser = new JsonParser();
+		try {
+			this.jsonReader = new BufferedReader(new FileReader(dbPath));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JsonObject root = parser.parse(this.jsonReader).getAsJsonObject();
+		root.get("items").getAsJsonArray().add(gson.toJson(i));
+		//printDBFile();
+	}
+	
 	public List<Item> listItems() {
 		List<Item> items = new ArrayList<Item>();
 
+		Gson gson = new Gson();
+		JsonParser parser = new JsonParser();
+		try {
+			this.jsonReader = new BufferedReader(new FileReader(dbPath));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JsonObject root = parser.parse(this.jsonReader).getAsJsonObject();
+		JsonElement registeredItems = root.get("items");
+			if (registeredItems.isJsonArray()){
+				for (JsonElement item : registeredItems.getAsJsonArray()){
+					Item i = gson.fromJson(item, SellableItem.class);
+					System.out.println(item);
+				}
+			}
+		
 		Item obj1 = new SellableItem("Botruc",
 				"Petite créature d'une vingtaine de centimètres ayant un aspect végétal et deux longs doigts pointus à chaque main. - Peut crocheter des serrures -",
-				400, null, 1);
+				400, "aCarat", 1);
 		/*
 		 * Item obj2 = new SellableItem("Cerbère nain",
 		 * "Chien géant à trois tête servant de gardien - Cet exemplaire est de petite taille -"
@@ -41,6 +121,7 @@ public class DBManager {
 		 */
 
 		items.add(obj1);
+		addItem(obj1);
 		/*
 		 * items.add(obj2); items.add(obj3); items.add(obj4); items.add(obj5);
 		 * items.add(obj6); items.add(obj7); items.add(obj8); items.add(obj9);

@@ -1,5 +1,6 @@
 package serveur;
 
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
@@ -12,7 +13,6 @@ import java.util.List;
 
 import client.app.IClient;
 import client.app.Item;
-import client.app.SellableItem;
 
 public class ServerApp extends UnicastRemoteObject implements IServer {
 
@@ -22,11 +22,11 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	List<IClient> clients;
 	List<Item> items;
 
-	public ServerApp() throws RemoteException {
+	public ServerApp() throws RemoteException, FileNotFoundException {
 		this.dbManager = new DBManager();
 		this.clients = new ArrayList<IClient>();
 		//this.items = new ArrayList<Item>();
-		this.items = this.dbManager.listItems();
+		this.items = this.dbManager.listItems();	
 	}
 
 	@Override
@@ -69,6 +69,8 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 			IServer s = new ServerApp();
 			Naming.bind("//localhost:" + port + "/enchere", s);
 
+			System.out.println("Adresse : localhost:" + port + "/enchere");
+			
 			while (true) {
 				for(Item i : s.getItems()){
 					Date localDate = new Date(System.currentTimeMillis());
@@ -86,6 +88,9 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 			e.printStackTrace();
 		} catch (AlreadyBoundException e) {
 			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -96,7 +101,9 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public void logout(IClient client) throws RemoteException {
+		System.out.println(client.getPseudo() + " logged out.");
 		this.clients.remove(client);
+		System.out.println(clients);
 	}
 
 }

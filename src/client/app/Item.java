@@ -54,5 +54,7 @@ public interface Item extends Serializable {
 	void setSold(boolean status);
 
 	Date getTime();
+
+	Object getSeller();
 		
 }
