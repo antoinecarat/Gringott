@@ -29,12 +29,11 @@ public class DBManager {
 	private JsonObject root;
 	private Gson gson;
 
-	public DBManager() {
-		try {
-			this.jsonReader = new BufferedReader(new FileReader(dbPath));
-		} catch (FileNotFoundException e1) {
+	public DBManager(boolean recreate, boolean mock) {
+		if (recreate) {
 			Path file = Paths.get(dbPath);
 			try {
+				Files.delete(file);
 				this.jsonWritter = Files.newBufferedWriter(file, StandardOpenOption.CREATE);
 				jsonWritter.write("{\n\"items\": []\n}");
 				jsonWritter.flush();
@@ -42,10 +41,27 @@ public class DBManager {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else {
+			try {
+				this.jsonReader = new BufferedReader(new FileReader(dbPath));
+			} catch (FileNotFoundException e1) {
+				Path file = Paths.get(dbPath);
+				try {
+					this.jsonWritter = Files.newBufferedWriter(file, StandardOpenOption.CREATE);
+					jsonWritter.write("{\n\"items\": []\n}");
+					jsonWritter.flush();
+					this.jsonReader = new BufferedReader(new FileReader(dbPath));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		this.gson = new Gson();
 		JsonParser parser = new JsonParser();
 		this.root = parser.parse(this.jsonReader).getAsJsonObject();
+		if (mock) {
+			initDBMock();
+		}
 	}
 
 	public void addItem(Item i){
@@ -97,10 +113,7 @@ public class DBManager {
 		}
 	}
 	
-	public static void main(String[] args) {
-		DBManager db = new DBManager();
-		System.out.println(db.listItems());
-		
+	public void initDBMock() {
 		Item obj1 = new SellableItem("Botruc", "Petite créature d'une vingtaine de centimètres ayant un aspect végétal et deux longs doigts pointus à chaque main. - Peut crocheter des serrures -", 400, "nDragonneau", 1);	
 		Item obj2 = new SellableItem("Cerbère nain", "Chien géant à trois tête servant de gardien - Cet exemplaire est de petite taille -", 250, "nDragonneau", 1);
 		Item obj3 = new SellableItem("Demiguise", "Créature pouvant se rendre invisible lorsqu'elle est menacée. - Ses poils servent à tisser des toiles d'invisibilité -" , 900, "nDragonneau", 1);
@@ -112,21 +125,16 @@ public class DBManager {
 		Item obj9 = new SellableItem("Oiseau-Tonnerre", "Vivant en Arizona, ces oiseau provoquent des tempêtes lorsqu'ils se sentent menacés. - Leur plume peuvent être utilisées pour fabriquer des baguettes magiques", 1250, "nDragonneau", 1);
 		Item obj10 = new SellableItem("OEuf congelé de Serpencendre", "Les serpencendres naissent dans des feux magiques laissés sans surveillance. Ils se cachent dans des recoins de la maison pour y pondre leurs oeufs qui, s'ils réussissent à grandir sans être repérés et chassés, enflamment la maison." , 2000, "nDragonneau", 1);
 		 
-		db.addItem(obj1);
-		//db.addItem(obj2);
-		//db.addItem(obj3);
-		//db.addItem(obj4);
-		//db.addItem(obj5);
-		//db.addItem(obj6);
-		//db.addItem(obj7);
-		//db.addItem(obj8);
-		//db.addItem(obj9);
-		//db.addItem(obj10);
-		System.out.println(db.listItems());
-		obj1.setLeader("hPotter");
-		db.updateItem(obj1);
-			
-		System.out.println(db.listItems());
+		this.addItem(obj1);
+		this.addItem(obj2);
+		this.addItem(obj3);
+		this.addItem(obj4);
+		this.addItem(obj5);
+		this.addItem(obj6);
+		this.addItem(obj7);
+		this.addItem(obj8);
+		this.addItem(obj9);
+		this.addItem(obj10);
 	}
 
 }

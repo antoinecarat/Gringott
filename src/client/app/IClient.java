@@ -4,6 +4,8 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import serveur.IServer;
+
 public interface IClient extends Remote {
 
 	/**
@@ -29,5 +31,9 @@ public interface IClient extends Remote {
 	String getPseudo() throws RemoteException;
 
 	List<Item> getItems() throws RemoteException;
+
+	IServer getServer() throws RemoteException;
+
+	void setPseudo(String pseudo) throws RemoteException;
 	
 }

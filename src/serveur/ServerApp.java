@@ -24,7 +24,7 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	List<Item> items;
 
 	public ServerApp() throws RemoteException, FileNotFoundException {
-		this.dbManager = new DBManager();
+		this.dbManager = new DBManager(true, true);
 		this.clients = new ArrayList<IClient>();
 		this.items = this.dbManager.listItems();
 	}
@@ -112,8 +112,13 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	@Override
 	public void logout(IClient client) throws RemoteException {
 		System.out.println(client.getPseudo() + " logged out.");
-		this.clients.remove(client);
-		System.out.println(clients);
+		for (IClient c : clients) {
+			if (c.getPseudo().equals(client.getPseudo())) {
+				this.clients.remove(client);
+			}
+			break;
+		}
+		System.out.println(clients.size() > 0 ? "Still connected : " + clients : "No clients connected now.");
 	}
 
 	@Override

@@ -134,6 +134,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 			this.view.setContentPane(view.getRegisterPanel());
 			try {
 				server.logout(this);
+				this.pseudo = null;
 				this.updateView();
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
@@ -145,8 +146,18 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 	}
 
 	@Override
+	public IServer getServer() {
+		return this.server;
+	}
+	
+	@Override
 	public List<Item> getItems() throws RemoteException {
 		return this.items;
+	}
+
+	@Override
+	public void setPseudo(String pseudo) throws RemoteException {
+		this.pseudo = pseudo;
 	}
 
 }

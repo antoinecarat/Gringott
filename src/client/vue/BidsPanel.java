@@ -33,10 +33,12 @@ public class BidsPanel extends JPanel {
 		this.client = client;
 		this.controller = controller;
 
-		this.setPreferredSize(new Dimension(800,600));
+		
 
 		items = client.getItems();
 
+		this.setPreferredSize(new Dimension(800, items.size()*150));
+		
 		for (Item i : items) {
 			if (!i.getSeller().equals(client.getPseudo())) {
 				JPanel itemPanel = new JPanel();
@@ -45,7 +47,7 @@ public class BidsPanel extends JPanel {
 				JLabel name = new JLabel(i.getName());
 				JTextArea descLabel = new JTextArea(i.getDescription());
 				JLabel time = new JLabel(i.getTime().toString());
-				JLabel price = new JLabel(String.valueOf(i.getPrice()) + " mornilles");
+				
 
 				descLabel.setEditable(false);
 				descLabel.setWrapStyleWord(true);
@@ -56,7 +58,12 @@ public class BidsPanel extends JPanel {
 				GridBagConstraints gbc = new GridBagConstraints();
 
 				if (!i.isSold()) {
-
+					JLabel price;
+					if (i.getLeader() != null) {
+						price = new JLabel(String.valueOf(i.getPrice()) + " mornilles. Tenu par : " + i.getLeader());
+					} else {
+						price = new JLabel(String.valueOf(i.getPrice()) + " mornilles.");
+					}
 					JLabel plus = new JLabel("+");
 					JTextArea jta = new JTextArea(String.valueOf(i.getPrice() * 0.2));
 					BidButton btnbit = new BidButton("Enchérir", i, jta);
@@ -90,7 +97,7 @@ public class BidsPanel extends JPanel {
 					btnbit.addActionListener(controller);
 					itemPanel.add(btnbit, gbc);
 				} else {
-
+					JLabel price = new JLabel(String.valueOf(i.getPrice()) + " mornilles.");
 					if (i.getLeader() == null) {
 						
 						JLabel buyer = new JLabel("Aucun acheteur");
