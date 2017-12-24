@@ -91,22 +91,48 @@ public class BidsPanel extends JPanel {
 					itemPanel.add(btnbit, gbc);
 				} else {
 
-					JLabel buyer = new JLabel(i.getLeader().getPseudo());
+					if (i.getLeader() == null) {
+						
+						JLabel buyer = new JLabel("Aucun acheteur");
+						
+						gbc.gridx = 0;
+						gbc.gridy = 0;
+						gbc.gridheight = 2;
+						gbc.insets = new Insets(2, 2, 2, 50);
+						itemPanel.add(name, gbc);
+						gbc.gridx = 1;
+						gbc.gridy = 0;
+						gbc.gridheight = 2;
+						itemPanel.add(descLabel, gbc);
+						gbc.gridx = 2;
+						gbc.gridy = 1;
+						
+						itemPanel.add(buyer, gbc);
+						gbc.gridx = 2;
+						gbc.gridy = 2;
+						itemPanel.add(price, gbc);
+						
+					} else {
+	
+						JLabel buyer = new JLabel(i.getLeader().getPseudo());
 
-					gbc.gridx = 0;
-					gbc.gridy = 0;
-					gbc.gridheight = 2;
-					itemPanel.add(name, gbc);
-					gbc.gridx = 1;
-					gbc.gridy = 0;
-					gbc.gridheight = 2;
-					itemPanel.add(descLabel, gbc);
-					gbc.gridx = 2;
-					gbc.gridy = 1;
-					itemPanel.add(buyer, gbc);
-					gbc.gridx = 2;
-					gbc.gridy = 2;
-					itemPanel.add(price, gbc);
+						gbc.gridx = 0;
+						gbc.gridy = 0;
+						gbc.gridheight = 2;
+						gbc.insets = new Insets(2, 2, 2, 50);
+						itemPanel.add(name, gbc);
+						gbc.gridx = 1;
+						gbc.gridy = 0;
+						gbc.gridheight = 2;
+						itemPanel.add(descLabel, gbc);
+						gbc.gridx = 2;
+						gbc.gridy = 1;
+						itemPanel.add(buyer, gbc);
+						gbc.gridx = 2;
+						gbc.gridy = 2;
+						itemPanel.add(price, gbc);
+					}
+					
 				}
 				this.add(itemPanel);
 			}

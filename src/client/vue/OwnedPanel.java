@@ -3,6 +3,7 @@ package client.vue;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -45,12 +46,13 @@ public class OwnedPanel extends JPanel {
 			descLabel.setLineWrap(true);
 
 			GridBagConstraints gbc = new GridBagConstraints();
-
-			if (i.isSold() && i.getLeader().getPseudo().equals(client.getPseudo())) {
+			
+			if (i.isSold() && i.getLeader() != null && i.getLeader().getPseudo().equals(client.getPseudo())) {
 				
 				gbc.gridx = 0;
 				gbc.gridy = 0;
-				gbc.gridheight = 2;
+				gbc.gridheight = 2;			
+				gbc.insets = new Insets(2, 2, 2, 50);
 				itemPanel.add(name, gbc);
 				gbc.gridx = 2;
 				gbc.gridy = 0;
