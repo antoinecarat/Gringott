@@ -8,7 +8,7 @@ public class SellableItem implements Item {
 	private String name;
 	private String description;
 	private String seller;
-	private IClient leader;
+	private String leader;
 	private double price;
 	private Date time;
 	private boolean sold;
@@ -34,7 +34,7 @@ public class SellableItem implements Item {
 	}
 
 	@Override
-	public IClient getLeader() {
+	public String getLeader() {
 		return this.leader;
 	}
 
@@ -49,7 +49,7 @@ public class SellableItem implements Item {
 	}
 
 	@Override
-	public void setLeader(IClient leader) {
+	public void setLeader(String leader) {
 		this.leader = leader;
 	}
 

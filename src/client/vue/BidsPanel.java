@@ -90,7 +90,7 @@ public class BidsPanel extends JPanel {
 					itemPanel.add(btnbit, gbc);
 				} else {
 
-					JLabel buyer = new JLabel(i.getLeader().getPseudo());
+					JLabel buyer = new JLabel(i.getLeader());
 
 					gbc.gridx = 0;
 					gbc.gridy = 0;

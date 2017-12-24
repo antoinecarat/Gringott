@@ -13,6 +13,7 @@ import java.util.List;
 
 import client.app.IClient;
 import client.app.Item;
+import client.app.SellableItem;
 
 public class ServerApp extends UnicastRemoteObject implements IServer {
 
@@ -25,8 +26,7 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	public ServerApp() throws RemoteException, FileNotFoundException {
 		this.dbManager = new DBManager();
 		this.clients = new ArrayList<IClient>();
-		//this.items = new ArrayList<Item>();
-		this.items = this.dbManager.listItems();	
+		this.items = this.dbManager.listItems();
 	}
 
 	@Override
@@ -39,9 +39,17 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	}
 
 	@Override
-	public void bid(Item item, double newPrice, IClient buyer) throws RemoteException {
+	public void bid(Item item, double newPrice, String buyer) throws RemoteException {
 		double price = item.getPrice() + newPrice;
-		System.out.println("New bid from " + buyer.getPseudo() + " recorded for " + item.getName() + " at " + price);
+		System.out.println("New bid from " + buyer + " recorded for " + item.getName() + " at " + price);
+		
+		for (Item i : items) {
+			if (i.getName().equals(item.getName())){
+				i.setPrice(price);
+				i.setLeader(buyer);
+				dbManager.updateItem(i);
+			}
+		}
 		
 		for (IClient c : clients) {
 			c.update(item, price, buyer);
@@ -57,6 +65,7 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	public void submit(Item item) throws RemoteException {
 		System.out.println("New item registered : " + item);
 		this.items.add(item);
+		dbManager.addItem(item);
 		for (IClient c : clients) {
 			c.addNewItem(item);
 		}
@@ -70,13 +79,14 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 			Naming.bind("//localhost:" + port + "/enchere", s);
 
 			System.out.println("Adresse : localhost:" + port + "/enchere");
-			
+
 			while (true) {
-				for(Item i : s.getItems()){
+				for (Item i : s.getItems()) {
 					Date localDate = new Date(System.currentTimeMillis());
-					if (i.getTime().compareTo(localDate) < 0 && !i.isSold()){
-						for (IClient c : s.getClients()){
+					if (i.getTime().compareTo(localDate) < 0 && !i.isSold()) {
+						for (IClient c : s.getClients()) {
 							i.setSold(true);
+							s.getDB().updateItem(i);
 							c.endSelling(i);
 						}
 					}
@@ -104,6 +114,11 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 		System.out.println(client.getPseudo() + " logged out.");
 		this.clients.remove(client);
 		System.out.println(clients);
+	}
+
+	@Override
+	public DBManager getDB() {
+		return this.dbManager;
 	}
 
 }

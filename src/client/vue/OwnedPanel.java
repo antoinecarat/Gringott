@@ -44,7 +44,7 @@ public class OwnedPanel extends JPanel {
 
 			GridBagConstraints gbc = new GridBagConstraints();
 
-			if (i.isSold() && i.getLeader().getPseudo().equals(client.getPseudo())) {
+			if (i.isSold() && client.getPseudo().equals(i.getLeader())) {
 				
 				gbc.gridx = 0;
 				gbc.gridy = 0;

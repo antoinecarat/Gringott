@@ -46,7 +46,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 	}
 
 	@Override
-	public void update(Item item, double newPrice, IClient buyer) throws RemoteException {
+	public void update(Item item, double newPrice, String buyer) throws RemoteException {
 		for (Item i : items){
 			if (i.getName().equals(item.getName()) && !i.isSold()){
 				System.out.println("Mise à jour de l'item : " + i.getName());
@@ -123,7 +123,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		case "Enchérir":
 			try {
 				BidButton source = (BidButton) e.getSource();
-				this.server.bid(source.getItem(), Double.parseDouble(source.getContent()), this);
+				this.server.bid(source.getItem(), Double.parseDouble(source.getContent()), this.getPseudo());
 			} catch (NumberFormatException e1) {
 				System.out.println("Merci de mettre un nombre.");
 			} catch (RemoteException e1) {

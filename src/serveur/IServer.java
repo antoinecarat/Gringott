@@ -12,7 +12,7 @@ public interface IServer extends Remote, Serializable {
 
 	void registerClient(IClient client) throws RemoteException;
 	
-	void bid(Item item, double newPrice, IClient buyer)  throws RemoteException;
+	void bid(Item item, double newPrice, String buyer)  throws RemoteException;
 	
 	List<Item> getItems()  throws RemoteException;
 	
@@ -21,5 +21,7 @@ public interface IServer extends Remote, Serializable {
 	List<IClient> getClients() throws RemoteException;
 
 	void logout(IClient client) throws RemoteException;
+
+	DBManager getDB() throws RemoteException;
 	
 }

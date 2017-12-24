@@ -18,7 +18,7 @@ public interface IClient extends Remote {
 	 * @param newPrice the new price.
 	 * @param buyer the new leader.
 	 */
-	void update(Item item, double newPrice, IClient buyer)  throws RemoteException;
+	void update(Item item, double newPrice, String buyer)  throws RemoteException;
 	
 	/**
 	 * Notify client that an item clock have reached its end.
