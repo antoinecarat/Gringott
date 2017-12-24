@@ -98,19 +98,7 @@ public class SubmitPanel extends JPanel {
 		gbSubmission.gridy = 4;
 		this.add(txtItemTime, gbSubmission);
 
-		gbSubmission.gridx = 0;
-		gbSubmission.gridy = 4;
-		gbSubmission.insets = new Insets(5, 5, 5, 50);
-		// this.add(btnPhoto, gbSubmission);
-		gbSubmission.insets = new Insets(0, 0, 0, 0);
-
-		// Separator
-		/*
-		 * mgbSubmission.gridx = 1; gbSubmission.gridy = 5;
-		 * gbSubmission.gridwidth = 2; submissionPanel.add(separator,
-		 * gbSubmission);
-		 */
-
+	
 		// Button for submission
 		gbSubmission.gridx = 2;
 		gbSubmission.gridy = 6;
