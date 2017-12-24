@@ -10,11 +10,13 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import client.vue.BidButton;
 import client.vue.ClientFrame;
 import serveur.IServer;
 
 public class ClientApp extends UnicastRemoteObject implements IClient, ActionListener {
 
+	private static final long serialVersionUID = 1373624286313090112L;
 	private ClientFrame view;
 	private String pseudo;
 	// OrderedSet ? Map ?
@@ -22,30 +24,52 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 	private IServer server;
 
 	ClientApp(String url) throws MalformedURLException, RemoteException, NotBoundException {
+		this.items = new ArrayList<Item>();
 		this.view = new ClientFrame(this, this);
 		this.view.setVisible(true);
-		this.items = new ArrayList<Item>();
 		this.server = (IServer) Naming.lookup("//" + url);
 	}
 
 	@Override
-	public void addNewItem(Item item) {
-		this.items.add(item);
-		System.out.println("Nouvel item ajouté : " + item);
+	public void addNewItem(Item item) throws RemoteException {
+		boolean contains = false;
+		for (Item i : items){
+			if (i.getName().equals(item.getName())){
+				contains = true;
+			}
+		}
+		if (!contains){
+			System.out.println("Nouvel item ajouté : " + item.getName());
+			this.items.add(item);
+		}
+		this.updateView();
 	}
 
 	@Override
-	public void update(Item item, double newPrice, IClient buyer) {
-		this.items.get(this.items.indexOf(item)).setPrice(newPrice);
-		this.items.get(this.items.indexOf(item)).setLeader(buyer);
+	public void update(Item item, double newPrice, IClient buyer) throws RemoteException {
+		for (Item i : items){
+			if (i.getName().equals(item.getName()) && !i.isSold()){
+				System.out.println("Mise à jour de l'item : " + i.getName());
+				i.setPrice(newPrice);
+				i.setLeader(buyer);
+				this.updateView();
+			}
+		}
 	}
 
 	@Override
-	public void endSelling(Item item) {
-		this.items.get(this.items.indexOf(item)).setSold(true);
+	public void endSelling(Item item) throws RemoteException {
+		for (Item i : items){
+			if (i.getName().equals(item.getName())){
+				System.out.println("Fin de la vente : " + i.getName());
+				i.setSold(true);
+				this.updateView();
+			}
+		}
 	}
 
-	public void updateView() {
+	public void updateView() throws RemoteException {
+		this.view.rebuild();
 		this.view.repaint();
 		this.view.revalidate();
 	}
@@ -77,7 +101,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		switch (e.getActionCommand()) {
 		case "Connexion":
 			try {
-				// TODO: set Client's pseudo with the JTextField
+				this.pseudo = this.view.getRegisterPanel().getFieldContent();
 				this.server.registerClient(this);
 				this.view.setContentPane(view.getTabPanel());
 				this.updateView();
@@ -87,29 +111,42 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 			break;
 		case "Soumettre":
 			try {
-				//TODO: retrieve item from submitPanel
-				this.server.submit(null);
+				Item item = this.view.getSubmitPanel().getFieldsContent();
+				this.server.submit(item);
+				this.view.getSubmitPanel().clear();
+			} catch (NumberFormatException e1) {
+				System.out.println("Merci de mettre des nombres.");
 			} catch (RemoteException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			break;
 		case "Enchérir":
 			try {
-				//TODO: retrieve item+price from bidsPanel
-				this.server.bid(null, 0, null);
+				BidButton source = (BidButton) e.getSource();
+				this.server.bid(source.getItem(), Double.parseDouble(source.getContent()), this);
+			} catch (NumberFormatException e1) {
+				System.out.println("Merci de mettre un nombre.");
 			} catch (RemoteException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			break;
 		case "Deconnexion":
 			this.view.setContentPane(view.getRegisterPanel());
-			this.updateView();
+			try {
+				server.logout(this);
+				this.updateView();
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+			}
 			break;
 		default:
 			System.out.println(e.getActionCommand() + " button has been clicked but i don't care.");
 		}
+	}
+
+	@Override
+	public List<Item> getItems() throws RemoteException {
+		return this.items;
 	}
 
 }

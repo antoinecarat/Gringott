@@ -2,6 +2,7 @@ package client.app;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public interface IClient extends Remote {
 
@@ -26,5 +27,7 @@ public interface IClient extends Remote {
 	void endSelling(Item item)  throws RemoteException;
 
 	String getPseudo() throws RemoteException;
+
+	List<Item> getItems() throws RemoteException;
 	
 }

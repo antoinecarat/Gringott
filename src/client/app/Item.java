@@ -1,6 +1,7 @@
 package client.app;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public interface Item extends Serializable {
 
@@ -51,4 +52,7 @@ public interface Item extends Serializable {
 	 * @return false is available; true if sold.
 	 */
 	void setSold(boolean status);
+
+	Date getTime();
+		
 }

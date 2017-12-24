@@ -1,5 +1,7 @@
 package client.app;
 
+import java.util.Date;
+
 public class SellableItem implements Item {
 
 	private static final long serialVersionUID = -4517882019233732317L;
@@ -7,13 +9,15 @@ public class SellableItem implements Item {
 	private String description;
 	private IClient leader;
 	private double price;
+	private Date time;
 	private boolean sold;
 	
-	public SellableItem(String name, String description, double price, IClient leader) {
+	public SellableItem(String name, String description, double price, IClient leader, long time2leave) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.leader = leader;
+		this.time = new Date(System.currentTimeMillis() + time2leave*60000);
 		this.sold = false;
 	}
 	
@@ -57,4 +61,8 @@ public class SellableItem implements Item {
 		this.sold = status;
 	}
 
+	@Override
+	public Date getTime() {
+		return this.time;
+	}
 }

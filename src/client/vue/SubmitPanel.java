@@ -6,16 +6,18 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import client.app.IClient;
+import client.app.Item;
+import client.app.SellableItem;
 
 public class SubmitPanel extends JPanel {
 
+	private static final long serialVersionUID = -7555887340687619434L;
 	private IClient client;
 	private ActionListener controller;
 	private JTextField txtItemName;
@@ -39,7 +41,7 @@ public class SubmitPanel extends JPanel {
 		JLabel labelName = new JLabel("Nom : ");
 		JLabel labelDescription = new JLabel("Description : ");
 		JLabel labelPrice = new JLabel("Prix de base : ");
-		JLabel labelTime = new JLabel("Date de fin : ");
+		JLabel labelTime = new JLabel("Durée de la vente (minutes) : ");
 
 		labelName.setPreferredSize(new Dimension(100, 40));
 		txtItemName.setPreferredSize(new Dimension(300, 40));
@@ -98,13 +100,14 @@ public class SubmitPanel extends JPanel {
 		gbSubmission.gridx = 0;
 		gbSubmission.gridy = 4;
 		gbSubmission.insets = new Insets(5, 5, 5, 50);
-		//this.add(btnPhoto, gbSubmission);
+		// this.add(btnPhoto, gbSubmission);
 		gbSubmission.insets = new Insets(0, 0, 0, 0);
 
 		// Separator
 		/*
-		 * mgbSubmission.gridx = 1; gbSubmission.gridy = 5; gbSubmission.gridwidth = 2;
-		 * submissionPanel.add(separator, gbSubmission);
+		 * mgbSubmission.gridx = 1; gbSubmission.gridy = 5;
+		 * gbSubmission.gridwidth = 2; submissionPanel.add(separator,
+		 * gbSubmission);
 		 */
 
 		// Button for submission
@@ -112,6 +115,18 @@ public class SubmitPanel extends JPanel {
 		gbSubmission.gridy = 6;
 		btnItemSubmission.addActionListener(this.controller);
 		this.add(btnItemSubmission, gbSubmission);
+	}
+
+	public Item getFieldsContent(){
+		Item content = new SellableItem(txtItemName.getText(), txtItemDescription.getText(), Double.parseDouble(txtItemPrice.getText()), client, Long.parseLong(txtItemTime.getText()));
+		return content;
+	}
+
+	public void clear() {
+		txtItemName.setText("");
+		txtItemDescription.setText("");
+		txtItemPrice.setText("");
+		txtItemTime.setText("");
 	}
 
 }

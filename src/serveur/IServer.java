@@ -17,5 +17,9 @@ public interface IServer extends Remote, Serializable {
 	List<Item> getItems()  throws RemoteException;
 	
 	void submit(Item item)  throws RemoteException;
+
+	List<IClient> getClients() throws RemoteException;
+
+	void logout(IClient client) throws RemoteException;
 	
 }

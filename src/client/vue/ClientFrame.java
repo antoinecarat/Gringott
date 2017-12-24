@@ -2,6 +2,7 @@ package client.vue;
 
 import java.awt.Container;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,30 +16,26 @@ import client.app.IClient;
 
 public class ClientFrame extends JFrame {
 
+	private static final long serialVersionUID = 6994145468596380654L;
 	private IClient client;
 	private BidsPanel bidsPanel;
 	private JTabbedPane tabPanel;
-	private JPanel registerPanel;
+	private RegisterPanel registerPanel;
 	private ActionListener controller;
 	
-	public ClientFrame(IClient client, ActionListener controller) {
+	public ClientFrame(IClient client, ActionListener controller) throws RemoteException {
 		super();
 		this.client = client;
 		this.controller = controller;
-		registerPanel = new JPanel();
-		registerPanel.add(new JLabel("Pseudo :"));
-		JTextField registerField = new JTextField();
-		registerField.setColumns(15);
-		registerPanel.add(registerField);
-		JButton registerButton = new JButton("Connexion");
-		registerPanel.add(registerButton );
-		registerButton.addActionListener(this.controller);
+		registerPanel = new RegisterPanel(controller);
 		
 		this.bidsPanel = new BidsPanel(client, controller);
 		JScrollPane scroll = new JScrollPane(bidsPanel);
 		this.tabPanel = new JTabbedPane();
-		this.tabPanel.addTab("Enchères", scroll);
 		this.tabPanel.addTab("Soummettre un article", new SubmitPanel(client, controller));
+		this.tabPanel.addTab("Enchères", scroll);
+		this.tabPanel.setSelectedIndex(1);
+		
 		
 		this.setTitle("Gringott - Service d'enchère pour sorciers");
 		this.setSize(800,600);
@@ -52,9 +49,20 @@ public class ClientFrame extends JFrame {
 	public Container getTabPanel() {
 		return this.tabPanel;
 	}
+	
+	public SubmitPanel getSubmitPanel() {
+		return (SubmitPanel) this.tabPanel.getComponentAt(0);
+	}
 
-	public Container getRegisterPanel() {
+	public RegisterPanel getRegisterPanel() {
 		return this.registerPanel;
+	}
+
+	public void rebuild() throws RemoteException {
+		this.tabPanel.remove(1);
+		this.bidsPanel = new BidsPanel(this.client, this.controller);
+		this.tabPanel.add("Enchères", bidsPanel);
+		this.tabPanel.setSelectedIndex(1);
 	}
 		
 }
