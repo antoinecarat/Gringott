@@ -51,15 +51,13 @@ public class OwnedPanel extends JPanel {
 				
 				gbc.gridx = 0;
 				gbc.gridy = 0;
-				gbc.gridheight = 2;			
 				gbc.insets = new Insets(2, 2, 2, 50);
 				itemPanel.add(name, gbc);
-				gbc.gridx = 2;
+				gbc.gridx = 1;
 				gbc.gridy = 0;
 				itemPanel.add(price, gbc);
 				gbc.gridx = 1;
 				gbc.gridy = 1;
-				gbc.gridwidth = 2;
 				itemPanel.add(descLabel, gbc);
 			} 
 			this.add(itemPanel);
