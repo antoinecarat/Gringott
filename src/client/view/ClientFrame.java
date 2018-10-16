@@ -18,6 +18,7 @@ public class ClientFrame extends JFrame {
 	private OwnedPanel ownedPanel;
 	private JTabbedPane tabPanel;
 	private RegisterPanel registerPanel;
+	private SubmitPanel submitPanel;
 	private ActionListener controller;
 	
 	public ClientFrame(IClient client, ActionListener controller) throws RemoteException {
@@ -30,8 +31,9 @@ public class ClientFrame extends JFrame {
 		JScrollPane bidsScroll = new JScrollPane(bidsPanel);
 		this.ownedPanel = new OwnedPanel(client, controller);
 		JScrollPane ownedScroll = new JScrollPane(ownedPanel);
+		this.submitPanel = new SubmitPanel(client, controller);
 		this.tabPanel = new JTabbedPane();
-		this.tabPanel.addTab("Soummettre un article", new SubmitPanel(client, controller));
+		this.tabPanel.addTab("Soummettre un article", submitPanel);
 		this.tabPanel.addTab("Mes achats", ownedScroll);
 		this.tabPanel.addTab("Enchères", bidsScroll);
 		this.tabPanel.setSelectedIndex(2);
@@ -51,7 +53,7 @@ public class ClientFrame extends JFrame {
 	}
 	
 	public SubmitPanel getSubmitPanel() {
-		return (SubmitPanel) this.tabPanel.getComponentAt(0);
+		return this.submitPanel;
 	}
 
 	public RegisterPanel getRegisterPanel() {
@@ -73,9 +75,8 @@ public class ClientFrame extends JFrame {
 	@Override
 	public void dispose() {
 		try {
-			if (this.client.getPseudo() != null) {
+			if (this.client.isConnected()) {
 				this.client.getServer().logout(client);
-				this.client.setPseudo(null);
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
