@@ -39,6 +39,11 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		this.view.repaint();
 		this.view.revalidate();
 	}
+	
+	@Override
+	public int getId() throws RemoteException {
+		return this.id;
+	}
 
 	@Override
 	public void addNewItem(Item item) throws RemoteException {
@@ -80,7 +85,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 
 	@Override
 	public String getPseudo() throws RemoteException {
-		return this.pseudo;
+		return this.pseudo+"@"+this.id;
 	}
 
 	@Override

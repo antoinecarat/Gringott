@@ -35,8 +35,8 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public int registerClient(IClient client) throws RemoteException {
-		System.out.println("New client registered : " + client.getPseudo());
 		this.clients.put(CLIENT_ID,client);
+		System.out.println("New client registered : " + client.getPseudo().split("@")[0]+"@"+CLIENT_ID); //Oui, c'est très laid, mais sinon l'id n'est pas encore initialisé pour le client, l'idéal serait d'afficher le message après
 		for (Item i : items) {
 			client.addNewItem(i);
 		}
@@ -46,13 +46,8 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	@Override
 	public void logout(IClient client) throws RemoteException {
 		System.out.println(client.getPseudo() + " logged out.");
-		for(IClient c : clients.values()) {
-			if (c.getPseudo().equals(client.getPseudo())) {
-				this.clients.remove(client);
-			}
-			break;
-		}
-		System.out.println(clients.size() > 0 ? "Still connected : " + clients : "No clients connected now.");
+		clients.remove(client.getId());
+		System.out.println(clients.size() > 0 ? clients.size()+" clients still connected." : "No more clients connected.");
 	}
 
 	@Override
