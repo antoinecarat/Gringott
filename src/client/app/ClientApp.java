@@ -14,6 +14,8 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +34,11 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		this.items = new ArrayList<Item>();
 		this.view = new ClientFrame(this, this);
 		this.view.setVisible(true);
+		Registry reg = LocateRegistry.getRegistry("192.168.43.95",8090);
 
-		this.server = (IServer) Naming.lookup("rmi://" + url);
+		this.server = (IServer) reg.lookup("enchere");
 	}
-	
+
 	public void updateView() throws RemoteException {
 		this.view.rebuild();
 		this.view.repaint();
