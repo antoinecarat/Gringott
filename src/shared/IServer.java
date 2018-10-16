@@ -3,6 +3,7 @@ package shared;
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.List;
 
 import server.DBManager;
@@ -14,7 +15,7 @@ public interface IServer extends Remote, Serializable {
 	 * @param client the new client
 	 * @throws RemoteException
 	 */
-	void registerClient(IClient client) throws RemoteException;
+	int registerClient(IClient client) throws RemoteException;
 
 	/**
 	 * Log out a client.
@@ -51,7 +52,7 @@ public interface IServer extends Remote, Serializable {
 	 * @return the clients.
 	 * @throws RemoteException
 	 */
-	List<IClient> getClients() throws RemoteException;
+	HashMap<Integer, IClient> getClients() throws RemoteException;
 	
 	/**
 	 * Get the server's db

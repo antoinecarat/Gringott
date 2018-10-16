@@ -21,6 +21,7 @@ import javax.swing.*;
 public class ClientApp extends UnicastRemoteObject implements IClient, ActionListener {
 
 	private static final long serialVersionUID = 1373624286313090112L;
+	private int id;
 	private ClientFrame view;
 	private String pseudo;
 	private List<Item> items;
@@ -88,7 +89,8 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		case "Connexion":
 			try {
 				this.pseudo = this.view.getRegisterPanel().getFieldContent();
-				this.server.registerClient(this);
+				this.id = this.server.registerClient(this);
+				System.out.println(id);
 				this.view.setContentPane(view.getTabPanel());
 				this.updateView();
 			} catch (RemoteException e1) {

@@ -9,6 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import shared.IClient;
@@ -18,32 +19,34 @@ import shared.Item;
 public class ServerApp extends UnicastRemoteObject implements IServer {
 
 	private static final long serialVersionUID = -8168686161180269490L;
+	private static int CLIENT_ID = 0;
 
 	private static BidMonitor monitor = new BidMonitor();
 
 	private DBManager dbManager;
-	private List<IClient> clients;
+	private HashMap<Integer, IClient> clients;
 	private List<Item> items;
 
 	public ServerApp() throws RemoteException, FileNotFoundException {
 		this.dbManager = new DBManager(true, true);
-		this.clients = new ArrayList<IClient>();
+		this.clients = new HashMap<Integer, IClient>();
 		this.items = this.dbManager.listItems();
 	}
 
 	@Override
-	public void registerClient(IClient client) throws RemoteException {
+	public int registerClient(IClient client) throws RemoteException {
 		System.out.println("New client registered : " + client.getPseudo());
-		this.clients.add(client);
+		this.clients.put(CLIENT_ID,client);
 		for (Item i : items) {
 			client.addNewItem(i);
 		}
+		return CLIENT_ID++;
 	}
 	
 	@Override
 	public void logout(IClient client) throws RemoteException {
 		System.out.println(client.getPseudo() + " logged out.");
-		for (IClient c : clients) {
+		for(IClient c : clients.values()) {
 			if (c.getPseudo().equals(client.getPseudo())) {
 				this.clients.remove(client);
 			}
@@ -57,7 +60,7 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 
 		double price = monitor.updateBid(item, newPrice, buyer, items, dbManager);
 		
-		for (IClient c : clients) {
+		for (IClient c : clients.values()) {
 			c.update(item, price, buyer);
 		}
 	}
@@ -67,7 +70,7 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 		System.out.println("New item registered : " + item);
 		this.items.add(item);
 		dbManager.addItem(item);
-		for (IClient c : clients) {
+		for (IClient c : clients.values()) {
 			c.addNewItem(item);
 		}
 	}
@@ -78,7 +81,7 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	}
 	
 	@Override
-	public List<IClient> getClients() throws RemoteException {
+	public HashMap<Integer, IClient> getClients() throws RemoteException {
 		return this.clients;
 	}
 	
@@ -100,7 +103,7 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 				for (Item i : s.getItems()) {
 					Date localDate = new Date(System.currentTimeMillis());
 					if (i.getTime().compareTo(localDate) < 0 && !i.isSold()) {
-						for (IClient c : s.getClients()) {
+						for (IClient c : s.getClients().values()) {
 							i.setSold(true);
 							s.getDB().updateItem(i);
 							c.endSelling(i);
