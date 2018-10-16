@@ -23,6 +23,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 
 	private static final long serialVersionUID = 1373624286313090112L;
 	private int id;
+	private boolean isConnected = false;
 	private ClientFrame view;
 	private String pseudo;
 	private List<Item> items;
@@ -46,6 +47,11 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		return this.id;
 	}
 
+	@Override
+	public boolean isConnected() throws RemoteException {
+		return isConnected;
+	}
+	
 	@Override
 	public void addNewItem(Item item) throws RemoteException {
 		boolean contains = false;
@@ -96,7 +102,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 			try {
 				this.pseudo = this.view.getRegisterPanel().getFieldContent();
 				this.id = this.server.registerClient(this);
-				System.out.println(id);
+				this.isConnected = true;
 				this.view.setContentPane(view.getTabPanel());
 				this.updateView();
 			} catch (RemoteException e1) {
@@ -133,6 +139,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 			try {
 				server.logout(this);
 				this.pseudo = null;
+				this.isConnected = false;
 				this.updateView();
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
@@ -166,7 +173,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		}
 
 		try {
-			String serverURL = "192.168.43.95:8090/enchere";
+			String serverURL = "localhost:8090/enchere";
 			ClientApp c = new ClientApp(serverURL);
 			System.out.println("Connexion au serveur " + serverURL + " reussi.");
 		} catch (RemoteException e) {

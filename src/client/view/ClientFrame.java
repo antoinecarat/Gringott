@@ -75,9 +75,8 @@ public class ClientFrame extends JFrame {
 	@Override
 	public void dispose() {
 		try {
-			if (this.client.getPseudo() != null) {
+			if (this.client.isConnected()) {
 				this.client.getServer().logout(client);
-				this.client.setPseudo(null);
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
