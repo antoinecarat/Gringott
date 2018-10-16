@@ -1,16 +1,5 @@
 package client.app;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.*;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
-
 import client.view.BidButton;
 import client.view.ClientFrame;
 import shared.IClient;
@@ -18,6 +7,16 @@ import shared.IServer;
 import shared.Item;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientApp extends UnicastRemoteObject implements IClient, ActionListener {
 
@@ -32,6 +31,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		this.items = new ArrayList<Item>();
 		this.view = new ClientFrame(this, this);
 		this.view.setVisible(true);
+
 		this.server = (IServer) Naming.lookup("rmi://" + url);
 	}
 	
@@ -159,6 +159,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 	}
 
 	public static void main(String[] args) {
+
 		System.setProperty("java.security.policy","file:./server.policy");
 
 		if (System.getSecurityManager() == null) {
@@ -167,6 +168,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 
 		try {
 			String serverURL = "192.168.43.95:8090/enchere";
+
 			ClientApp c = new ClientApp(serverURL);
 			System.out.println("Connexion au serveur " + serverURL + " reussi.");
 		} catch (RemoteException e) {

@@ -7,6 +7,7 @@ import java.rmi.Naming;
 import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
@@ -113,7 +114,7 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 
 
 			int port = 8090;
-			LocateRegistry.createRegistry(port);
+			Registry reg = LocateRegistry.createRegistry(port);
 			IServer s = new ServerApp(port);
 
 			Naming.bind("rmi://"+localIp+":" + port + "/enchere", s);
