@@ -1,24 +1,30 @@
 package client.app;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
-
 import client.view.BidButton;
 import client.view.ClientFrame;
 import shared.IClient;
 import shared.IServer;
 import shared.Item;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RMISecurityManager;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClientApp extends UnicastRemoteObject implements IClient, ActionListener {
 
 	private static final long serialVersionUID = 1373624286313090112L;
+	private int id;
+	private boolean isConnected = false;
 	private ClientFrame view;
 	private String pseudo;
 	private List<Item> items;
@@ -28,15 +34,27 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 		this.items = new ArrayList<Item>();
 		this.view = new ClientFrame(this, this);
 		this.view.setVisible(true);
-		this.server = (IServer) Naming.lookup("//" + url);
+		Registry reg = LocateRegistry.getRegistry("192.168.43.95",8090);
+
+		this.server = (IServer) reg.lookup("enchere");
 	}
-	
+
 	public void updateView() throws RemoteException {
 		this.view.rebuild();
 		this.view.repaint();
 		this.view.revalidate();
 	}
+	
+	@Override
+	public int getId() throws RemoteException {
+		return this.id;
+	}
 
+	@Override
+	public boolean isConnected() throws RemoteException {
+		return isConnected;
+	}
+	
 	@Override
 	public void addNewItem(Item item) throws RemoteException {
 		boolean contains = false;
@@ -65,28 +83,29 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 	}
 
 	@Override
-	public void endSelling(Item item) throws RemoteException {
+	public void endSelling(Item item) {
 		for (Item i : items){
 			if (i.getName().equals(item.getName())){
 				System.out.println("Fin de la vente : " + i.getName());
 				i.setSold(true);
-				this.updateView();
+				this.endSelling(item);
 			}
 		}
 	}
 
 	@Override
 	public String getPseudo() throws RemoteException {
-		return this.pseudo;
+		return this.pseudo+"@"+this.id;
 	}
 
 	@Override
-	public synchronized void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
 		case "Connexion":
 			try {
 				this.pseudo = this.view.getRegisterPanel().getFieldContent();
-				this.server.registerClient(this);
+				this.id = this.server.registerClient(this);
+				this.isConnected = true;
 				this.view.setContentPane(view.getTabPanel());
 				this.updateView();
 			} catch (RemoteException e1) {
@@ -99,7 +118,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 				this.server.submit(item);
 				this.view.getSubmitPanel().clear();
 			} catch (NumberFormatException e1) {
-				System.out.println("Merci de mettre des nombres.");
+                new JOptionPane().showMessageDialog(null, "Merci de mettre des nombres.", "Information", JOptionPane.ERROR_MESSAGE);
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
@@ -110,10 +129,10 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 				if (Double.parseDouble(source.getContent()) >= source.getItem().getPrice()*0.2) {
 					this.server.bid(source.getItem(), Double.parseDouble(source.getContent()), this.getPseudo());
 				} else {
-					System.out.println("Vous devez enchérir d'au moins 20% du prix courant.");
+                    new JOptionPane().showMessageDialog(null, "Vous devez enchérir d'au moins 20% du prix courant.", "Information", JOptionPane.INFORMATION_MESSAGE);
 				}
 			} catch (NumberFormatException e1) {
-				System.out.println("Merci de mettre un nombre.");
+                new JOptionPane().showMessageDialog(null, "Merci de mettre un nombre.", "Information", JOptionPane.INFORMATION_MESSAGE);
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
@@ -123,6 +142,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 			try {
 				server.logout(this);
 				this.pseudo = null;
+				this.isConnected = false;
 				this.updateView();
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
@@ -149,8 +169,16 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 	}
 
 	public static void main(String[] args) {
+
+		System.setProperty("java.security.policy","file:./server.policy");
+
+		if (System.getSecurityManager() == null) {
+			System.setSecurityManager(new RMISecurityManager());
+		}
+
 		try {
-			String serverURL = "localhost:8090/enchere";
+			String serverURL = "192.168.43.95:8090/enchere";
+
 			ClientApp c = new ClientApp(serverURL);
 			System.out.println("Connexion au serveur " + serverURL + " reussi.");
 		} catch (RemoteException e) {
