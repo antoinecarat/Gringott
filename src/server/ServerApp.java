@@ -1,11 +1,13 @@
 package server;
 
 import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
+import java.net.*;
 import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +30,8 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	private HashMap<Integer, IClient> clients;
 	private List<Item> items;
 
-	public ServerApp() throws RemoteException, FileNotFoundException {
+	public ServerApp(int port) throws RemoteException, FileNotFoundException {
+		super(port);
 		this.dbManager = new DBManager(true);
 		this.clients = new HashMap<Integer, IClient>();
 		this.items = this.dbManager.listItems();
@@ -37,8 +40,8 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public int registerClient(IClient client) throws RemoteException {
-		System.out.println("New client registered : " + client.getPseudo());
 		this.clients.put(CLIENT_ID,client);
+		System.out.println("New client registered : " + client.getPseudo().split("@")[0]+"@"+CLIENT_ID); //Oui, c'est très laid, mais sinon l'id n'est pas encore initialisé pour le client, l'idéal serait d'afficher le message après
 		for (Item i : items) {
 			client.addNewItem(i);
 		}
@@ -48,13 +51,8 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	@Override
 	public void logout(IClient client) throws RemoteException {
 		System.out.println(client.getPseudo() + " logged out.");
-		for(IClient c : clients.values()) {
-			if (c.getPseudo().equals(client.getPseudo())) {
-				this.clients.remove(client);
-			}
-			break;
-		}
-		System.out.println(clients.size() > 0 ? "Still connected : " + clients : "No clients connected now.");
+		clients.remove(client.getId());
+		System.out.println(clients.size() > 0 ? clients.size()+" clients still connected." : "No more clients connected.");
 	}
 
 	@Override
@@ -108,10 +106,34 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 	
 	public static void main(String[] args) {
 		try {
+
+			final String dir = System.getProperty("user.dir");
+			System.out.println("current dir = " + dir);
+
+			String localIp = null;
+
+			try(final DatagramSocket socket = new DatagramSocket()){
+				socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+				localIp = socket.getLocalAddress().getHostAddress();
+			} catch (SocketException e) {
+				e.printStackTrace();
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+
+			System.setProperty("java.rmi.server.hostname",localIp);
+			System.setProperty("java.security.policy","file:./server.policy");
+
+			if (System.getSecurityManager() == null) {
+				System.setSecurityManager(new RMISecurityManager());
+			}
+
+
 			int port = 8090;
-			LocateRegistry.createRegistry(port);
-			IServer s = new ServerApp();
-			Naming.bind("//localhost:" + port + "/enchere", s);
+			Registry reg = LocateRegistry.createRegistry(port);
+			IServer s = new ServerApp(port);
+
+			Naming.bind("rmi://"+localIp+":" + port + "/enchere", s);
 
 			System.out.println("Adresse : localhost:" + port + "/enchere");
 
