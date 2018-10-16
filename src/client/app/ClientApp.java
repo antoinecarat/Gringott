@@ -16,6 +16,8 @@ import shared.IClient;
 import shared.IServer;
 import shared.Item;
 
+import javax.swing.*;
+
 public class ClientApp extends UnicastRemoteObject implements IClient, ActionListener {
 
 	private static final long serialVersionUID = 1373624286313090112L;
@@ -99,7 +101,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 				this.server.submit(item);
 				this.view.getSubmitPanel().clear();
 			} catch (NumberFormatException e1) {
-				System.out.println("Merci de mettre des nombres.");
+                new JOptionPane().showMessageDialog(null, "Merci de mettre des nombres.", "Information", JOptionPane.ERROR_MESSAGE);
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
@@ -110,10 +112,10 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 				if (Double.parseDouble(source.getContent()) >= source.getItem().getPrice()*0.2) {
 					this.server.bid(source.getItem(), Double.parseDouble(source.getContent()), this.getPseudo());
 				} else {
-					System.out.println("Vous devez enchérir d'au moins 20% du prix courant.");
+                    new JOptionPane().showMessageDialog(null, "Vous devez enchérir d'au moins 20% du prix courant.", "Information", JOptionPane.INFORMATION_MESSAGE);
 				}
 			} catch (NumberFormatException e1) {
-				System.out.println("Merci de mettre un nombre.");
+                new JOptionPane().showMessageDialog(null, "Merci de mettre un nombre.", "Information", JOptionPane.INFORMATION_MESSAGE);
 			} catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
