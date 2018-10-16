@@ -83,7 +83,7 @@ public class ClientApp extends UnicastRemoteObject implements IClient, ActionLis
 	}
 
 	@Override
-	public synchronized void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
 		case "Connexion":
 			try {

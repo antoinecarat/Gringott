@@ -19,9 +19,11 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 
 	private static final long serialVersionUID = -8168686161180269490L;
 
-	DBManager dbManager;
-	List<IClient> clients;
-	List<Item> items;
+	private static BidMonitor monitor = new BidMonitor();
+
+	private DBManager dbManager;
+	private List<IClient> clients;
+	private List<Item> items;
 
 	public ServerApp() throws RemoteException, FileNotFoundException {
 		this.dbManager = new DBManager(true, true);
@@ -52,16 +54,8 @@ public class ServerApp extends UnicastRemoteObject implements IServer {
 
 	@Override
 	public void bid(Item item, double newPrice, String buyer) throws RemoteException {
-		double price = item.getPrice() + newPrice;
-		System.out.println("New bid from " + buyer + " recorded for " + item.getName() + " at " + price);
-		
-		for (Item i : items) {
-			if (i.getName().equals(item.getName())){
-				i.setPrice(price);
-				i.setLeader(buyer);
-				dbManager.updateItem(i);
-			}
-		}
+
+		double price = monitor.updateBid(item, newPrice, buyer, items, dbManager);
 		
 		for (IClient c : clients) {
 			c.update(item, price, buyer);
